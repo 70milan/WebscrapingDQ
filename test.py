@@ -33,8 +33,18 @@ def return_price(address):
     price = soup.find("span", {"class": "a-offscreen"}).text
     return price
 
-
-
+def return_desc(address):
+    # calling get method of requests library
+    response = requests.get(address, headers=header_values)
+    # response hasve an attri called text.encode("utf-8") to read the text.
+    response_text = response.text.encode("utf-8")
+    soup = BeautifulSoup(response_text, 'lxml')
+    descs = soup.find_all("div", {"id": "detailBullets_feature_div"})
+    #[-4].get_text().strip()
+    for d in descs:
+        desc = d.find_all("span")[-1].get_text()
+       
+    return desc
 #######################################################################################################
 
 
@@ -76,7 +86,7 @@ price = return_price(address)
 title = return_title(address)
 ratings = return_ratings(address)
 cat = return_cat(address)
-#desc = return_desc(address)
+desc = return_desc(address)
 
-df = pd.DataFrame([[date_stamp,time_stamp,cat,title,price,ratings]], columns=['date','time','category','title','price','ratings'])
+df = pd.DataFrame([[date_stamp,time_stamp,cat,title,price,desc,ratings]], columns=['date','time','category','title','price','ASIN','ratings'])
 
